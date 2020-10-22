@@ -1,33 +1,58 @@
- <style>
+<style>
         div.app {
             position: absolute;
             width: 100px;
             height: 100px;
             background: red;
             cursor: pointer;
+            border: 2px;
+            border-radius: 20%;
+
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        div.images {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-image: url('https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1363280188,218441285&fm=26&gp=0.jpg');
+            background-size: cover;
+            border-radius: 30%;
+            z-index: 999;
+        }
+
+        input.inputfile {
+            /* display: none; */
         }
     </style>
     <div class='app'>
+        <div class="images"></div>
 
     </div>
+    <button>获取</button>
+    <input type="file" name="" id="" class='inputfile'>
     <script>
-        const app = document.querySelector('.app')
-        var arr = ['#ccc', 'red', 'yellow', 'green', 'blue']
-        // 随机颜色
+        const images = document.querySelector('.images')
+        const app = document.querySelector('.app')  //元素外框
+        var bgImage = 'https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpWK1HF6hhy/it/u=1363284243,218441285&fm=26&gp=1.jpg'
         const randomColor = function (arr) {
-            // var num=Math.round(Math.random()*4)
-            // return arr[num]
             function random() {
                 return Math.round(Math.random() * 255)
             }
-
             return `rgb(${random()},${random()},${random()})`
         }
-
+        // 背景选择
+        if (image1 = localStorage.getItem('dataURL')) {
+            images.style.backgroundImage=`url(${image1})`
+        }
         var cookieLeft, cookieTop, cookieColor
 
         if (document.cookie) {
-            
             var cook = document.cookie.split(', ').forEach(item => {
                 var key = item.split('=')
                 switch (key[0]) {
@@ -37,35 +62,50 @@
                     default: break;
                 }
             })
-           
             app.style.left = cookieLeft + 'px'
             app.style.top = cookieTop + 'px'
             app.style.backgroundColor = cookieColor
             console.log(cookieColor);
         }
-
-        app.ontouchstart = function (e) {
+        app.onmousedown = function (e) {
             var l = e.pageX - this.offsetLeft
             var t = e.pageY - this.offsetTop
             this.style.backgroundColor = cookieColor = randomColor()
             this.style.transition = 'background-color 2s'
-            document.ontouchmove= function (e) {
+            document.onmousemove = function (e) {
                 var le = e.pageX - l
                 var to = e.pageY - t
                 app.style.left = le + 'px'
                 app.style.top = to + 'px'
                 cookieLeft = le
                 cookieTop = to
-
-                // console.log(app.offsetLeft);
             }
-            document.ontouchend = function () {
-                console.log(app.offsetLeft);
-
+            document.onmouseup = function () {
                 document.onmousemove = null
                 document.cookie = `left=${cookieLeft}, top=${cookieTop}, color=${cookieColor}`
             }
         }
 
 
+    </script>
+    <script>
+        //    设置背景
+        const btn = document.querySelector('button')
+        const inputfile = document.querySelector('.inputfile')
+        document.ongesturestart = function () {
+            inputfile.style.display = 'block'
+            if (app.fouce()) {
+                this.style.display = 'none'
+            }
+            // 加载本地文件
+            inputfile.onchange = function () {
+                const fileObj = inputfile.files[0];
+                const windowURL = window.URL || window.webkitURL;
+                if (fileObj) {
+                    const dataURl = windowURL.createObjectURL(fileObj);
+                    images.style.backgroundImage = `url(${dataURl})`
+                    localStorage.setItem('dataURL',dataURL)
+                }
+            }
+        }
     </script>
