@@ -44,12 +44,12 @@
             console.log(cookieColor);
         }
 
-        app.touchstart = function (e) {
+        app.ontouchstart = function (e) {
             var l = e.pageX - this.offsetLeft
             var t = e.pageY - this.offsetTop
             this.style.backgroundColor = cookieColor = randomColor()
             this.style.transition = 'background-color 2s'
-            document.touchmove= function (e) {
+            document.ontouchmove= function (e) {
                 var le = e.pageX - l
                 var to = e.pageY - t
                 app.style.left = le + 'px'
@@ -59,7 +59,7 @@
 
                 // console.log(app.offsetLeft);
             }
-            document.touchend = function () {
+            document.ontouchend = function () {
                 console.log(app.offsetLeft);
 
                 document.onmousemove = null
