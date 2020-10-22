@@ -17,8 +17,8 @@
 
         div.images {
             position: absolute;
-            width: 80px;
-            height: 80px;
+            width: 230px;
+            height: 230px;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
@@ -56,7 +56,9 @@
        
         if (image1 = localStorage.getItem('dataURL')) {
             images.style.backgroundImage=`url(${image1})`
-            console.log(11111);
+            
+        }else{
+            images.style.backgroundImage=`url(bgImage)`
         }
         var cookieLeft, cookieTop, cookieColor
 
