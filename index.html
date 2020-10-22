@@ -1,13 +1,15 @@
    <style>
         div.app {
             position: absolute;
-            width: 100px;
-            height: 100px;
+            width: 10%;
+            height: 10%;
             background: red;
             cursor: pointer;
             border: 2px;
             border-radius: 20%;
-
+            left:10%;
+            top:10%;
+           
             background-size: cover;
             background-position: center;
             z-index: 1;
@@ -51,7 +53,7 @@
             return `rgb(${random()},${random()},${random()})`
         }
         // 背景选择
-        console.log(localStorage.getItem('dataURL'));
+       
         if (image1 = localStorage.getItem('dataURL')) {
             images.style.backgroundImage=`url(${image1})`
             console.log(11111);
@@ -73,12 +75,12 @@
             app.style.backgroundColor = cookieColor
             console.log(cookieColor);
         }
-        app.onmousedown = function (e) {
+        app.ontouchstart= function (e) {
             var l = e.pageX - this.offsetLeft
             var t = e.pageY - this.offsetTop
             this.style.backgroundColor = cookieColor = randomColor()
             this.style.transition = 'background-color 2s'
-            document.onmousemove = function (e) {
+            document.ontouchmove = function (e) {
                 var le = e.pageX - l
                 var to = e.pageY - t
                 app.style.left = le + 'px'
@@ -86,7 +88,7 @@
                 cookieLeft = le
                 cookieTop = to
             }
-            document.onmouseup = function () {
+            document.ontouchend = function () {
                 document.onmousemove = null
                 document.cookie = `left=${cookieLeft}, top=${cookieTop}, color=${cookieColor}`
             }
