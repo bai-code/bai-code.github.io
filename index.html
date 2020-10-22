@@ -27,7 +27,7 @@
         var cookieLeft, cookieTop, cookieColor
 
         if (document.cookie) {
-            console.log(document.cookie);
+            
             var cook = document.cookie.split(', ').forEach(item => {
                 var key = item.split('=')
                 switch (key[0]) {
@@ -37,19 +37,19 @@
                     default: break;
                 }
             })
-            console.log(cookieColor);
+           
             app.style.left = cookieLeft + 'px'
             app.style.top = cookieTop + 'px'
             app.style.backgroundColor = cookieColor
             console.log(cookieColor);
         }
 
-        app.onmousedown = function (e) {
+        app.touchstart = function (e) {
             var l = e.pageX - this.offsetLeft
             var t = e.pageY - this.offsetTop
             this.style.backgroundColor = cookieColor = randomColor()
             this.style.transition = 'background-color 2s'
-            document.onmousemove = function (e) {
+            document.touchmove= function (e) {
                 var le = e.pageX - l
                 var to = e.pageY - t
                 app.style.left = le + 'px'
@@ -59,7 +59,7 @@
 
                 // console.log(app.offsetLeft);
             }
-            document.onmouseup = function () {
+            document.touchend = function () {
                 console.log(app.offsetLeft);
 
                 document.onmousemove = null
