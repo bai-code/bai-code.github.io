@@ -1,4 +1,4 @@
-<style>
+   <style>
         div.app {
             position: absolute;
             width: 100px;
@@ -28,14 +28,18 @@
 
         input.inputfile {
             /* display: none; */
+            position: absolute;
+            bottom: 0;
+            right: 0;
         }
     </style>
     <div class='app'>
         <div class="images"></div>
 
     </div>
-    <button>获取</button>
-    <input type="file" name="" id="" class='inputfile'>
+    <div>
+        <input type="file" name="" id="" class='inputfile'>
+    </div>
     <script>
         const images = document.querySelector('.images')
         const app = document.querySelector('.app')  //元素外框
@@ -47,8 +51,10 @@
             return `rgb(${random()},${random()},${random()})`
         }
         // 背景选择
+        console.log(localStorage.getItem('dataURL'));
         if (image1 = localStorage.getItem('dataURL')) {
             images.style.backgroundImage=`url(${image1})`
+            console.log(11111);
         }
         var cookieLeft, cookieTop, cookieColor
 
@@ -92,20 +98,13 @@
         //    设置背景
         const btn = document.querySelector('button')
         const inputfile = document.querySelector('.inputfile')
-        document.ongesturestart = function () {
-            inputfile.style.display = 'block'
-            if (app.fouce()) {
-                this.style.display = 'none'
-            }
-            // 加载本地文件
             inputfile.onchange = function () {
                 const fileObj = inputfile.files[0];
                 const windowURL = window.URL || window.webkitURL;
                 if (fileObj) {
-                    const dataURl = windowURL.createObjectURL(fileObj);
-                    images.style.backgroundImage = `url(${dataURl})`
+                    const dataURL = windowURL.createObjectURL(fileObj);
+                    images.style.backgroundImage = `url(${dataURL})`
                     localStorage.setItem('dataURL',dataURL)
                 }
             }
-        }
     </script>
