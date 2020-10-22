@@ -1,5 +1,71 @@
-一串文字
-<i> xieti<i>
+ <style>
+        div.app {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: red;
+            cursor: pointer;
+        }
+    </style>
+    <div class='app'>
+
+    </div>
+    <script>
+        const app = document.querySelector('.app')
+        var arr = ['#ccc', 'red', 'yellow', 'green', 'blue']
+        // 随机颜色
+        const randomColor = function (arr) {
+            // var num=Math.round(Math.random()*4)
+            // return arr[num]
+            function random() {
+                return Math.round(Math.random() * 255)
+            }
+
+            return `rgb(${random()},${random()},${random()})`
+        }
+
+        var cookieLeft, cookieTop, cookieColor
+
+        if (document.cookie) {
+            console.log(document.cookie);
+            var cook = document.cookie.split(', ').forEach(item => {
+                var key = item.split('=')
+                switch (key[0]) {
+                    case 'left': cookieLeft = key[1]; break;
+                    case 'top': cookieTop = key[1]; break;
+                    case 'color': cookieColor = key[1]; break;
+                    default: break;
+                }
+            })
+            console.log(cookieColor);
+            app.style.left = cookieLeft + 'px'
+            app.style.top = cookieTop + 'px'
+            app.style.backgroundColor = cookieColor
+            console.log(cookieColor);
+        }
+
+        app.onmousedown = function (e) {
+            var l = e.pageX - this.offsetLeft
+            var t = e.pageY - this.offsetTop
+            this.style.backgroundColor = cookieColor = randomColor()
+            this.style.transition = 'background-color 2s'
+            document.onmousemove = function (e) {
+                var le = e.pageX - l
+                var to = e.pageY - t
+                app.style.left = le + 'px'
+                app.style.top = to + 'px'
+                cookieLeft = le
+                cookieTop = to
+
+                // console.log(app.offsetLeft);
+            }
+            document.onmouseup = function () {
+                console.log(app.offsetLeft);
+
+                document.onmousemove = null
+                document.cookie = `left=${cookieLeft}, top=${cookieTop}, color=${cookieColor}`
+            }
+        }
 
 
-ergou
+    </script>
