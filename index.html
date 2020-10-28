@@ -1,114 +1,337 @@
-   <style>
-        div.app {
-            position: absolute;
-            width: 250px;
-            height: 250px;
-            background: red;
-            cursor: pointer;
-            border: 2px;
-            border-radius: 20%;
-            left:10%;
-            top:10%;
-           
-            background-size: cover;
-            background-position: center;
-            z-index: 1;
-        }
+<div class="container">
+        <div class="content">
 
-        div.images {
-            position: absolute;
-            width: 230px;
-            height: 230px;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            background-image: url('https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1363280188,218441285&fm=26&gp=0.jpg');
-            background-size: cover;
-            border-radius: 30%;
-            z-index: 999;
-        }
-
-        input.inputfile {
-            /* display: none; */
-            position: absolute;
-            bottom: 0;
-            right: 0;
-        }
-    </style>
-    <div class='app'>
-        <div class="images"></div>
-
+        </div>
+        <div class="other">
+            <div class="time">
+                <div>使用时间</div>
+                <p class='countTimer'></p>
+            </div>
+            <div class="count">
+                <div>累计次数</div>
+                <p class='countNumber'>0</p>
+            </div>
+            <!-- <div class="control">
+               
+                <div class="changeImage">
+                    <input type="file" name="" id='selectImage' title="0">
+                    <label for="selectImage">选择图片</label>
+                    <span class='images' ></span>
+                </div>
+            </div> -->
+        </div>
     </div>
-    <div>
-        <input type="file" name="" id="" class='inputfile'>
-    </div>
-    <script>
-        const images = document.querySelector('.images')
-        const app = document.querySelector('.app')  //元素外框
-        var bgImage = 'https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpWK1HF6hhy/it/u=1363284243,218441285&fm=26&gp=1.jpg'
-        const randomColor = function (arr) {
-            function random() {
-                return Math.round(Math.random() * 255)
+
+<style>
+   .container{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    width: 70%;
+    height: 90%;
+    /* border:1px solid  red; */
+
+}
+.content{
+    position: absolute;
+    right: 0;
+    /* width: 600px; */
+    /* height: 600px; */
+    border: 1px solid yellow;
+    box-sizing: border-box;
+    
+}
+.other{
+    position: absolute;
+    left: 0;
+    top: 10%;
+    /* border: 1px solid black; */
+    width: 20%;
+    height: 80%;
+    
+}
+.time,.count{
+    position: absolute;
+    left: 50%;
+    width: 90%;
+    height: 20%;
+    transform: translateX(-50%);
+    /* border: 1px solid yellow; */
+    text-align: center;
+}
+.time div,.count div{
+    letter-spacing: 5px;
+    font-weight: bolder;
+}
+.count{
+    top: 25%;
+}
+/* ------------- */
+/* 控制区域 */
+.control{
+    position: absolute;
+    width: 100%;
+    /* border: 1px solid red; */
+    top: 40%;
+    text-align: center;
+}
+
+.control .start span ,.control .stop span{
+    display: block;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-top: 10px;
+    width: 60%;
+    left: 50%;
+    margin-left: 15px;
+    opacity: 0.7;
+    cursor: pointer;
+}
+.control .start span{
+    background-color: green;
+}
+.control .stop span{
+    background:red;
+}
+.control input{
+    margin-top: 15px;
+    visibility: hidden;
+    cursor: pointer;
+}
+.control label{
+    box-shadow: 0 0 10px red,
+    -5px -5px 10px red,
+    5px 5px 10px red;
+    background-color: red;
+    opacity: 0.8;
+    padding: 5px 15px;
+    color: white;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+.control .images{
+    display: block;
+    margin-top: 15px;
+}
+   
+</style>
+
+
+<script>
+   function el(dom) {
+    return document.querySelector(dom)
+}
+const obj = {
+    bgw: 600,
+    bgh: 600,
+    bgurl: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1688834426,1999265845&fm=26&gp=0.jpg',
+    col: 3,
+    row: 3,
+    block: [],
+    num: 0,    //记录次数
+    h: 0,
+    m: 0,
+    s: 0,
+    timers: null,
+    win: false,
+}
+obj.oneWidth = obj.bgw / obj.row
+obj.oneHeight = obj.bgh / obj.col
+//获取元素
+var container = el('.container')
+content = el('.content')
+countTimer = el('.countTimer')
+countNumber = el('.countNumber')
+
+const images = document.querySelector('.images')
+const selectImage = document.querySelector('#selectImage')
+
+
+start = el('.start')
+stop = el('.stop')
+file = el('file')
+// 初始化
+function init() {
+    let { bgw, bgh,col,row,oneWidth,oneHeight } = obj
+    content.style.width = row*oneWidth + 'px'
+    content.style.height = col*oneHeight + 'px'
+    countTimer.innerHTML = `00 : 00 : 00`
+
+    images.style.width='100px'
+    images.style.height='100px'
+    images.style.backgroundImage=`url(${obj.bgurl})`
+    images.style.backgroundSize='cover'
+    images.style.margin='30px'
+
+    // setTime()  //设置时间
+    setBg()  //设置背景
+    chaos()
+    events()
+}
+init()
+// 时间显示
+function setTime() {
+    // let {h,m,s}=obj
+    var s = 0, m = 0, h = 0
+    obj.timers = setInterval(() => {
+        s++
+        if (s >= 60) {
+            s = 0
+            m++
+        }
+        if (m >= 60) {
+            m = 0
+            h++
+        }
+        countTimer.innerHTML = `${pad(h)} : ${pad(m)} : ${pad(s)}`
+    }, 1000)
+    function pad(parameter) {
+        return parameter = parameter < 10 ? '0' + parameter : parameter
+    }
+}
+//设置背景
+function setBg() {
+    let { col, row, block, oneWidth, oneHeight } = obj
+    var flag = true
+    for (let i = 0; i < col; i++) {
+        for (let j = 0; j < row; j++) {
+            if (i == col - 1 && j == row - 1) {
+                flag = false
             }
-            return `rgb(${random()},${random()},${random()})`
+            block.push(new Bg(i * oneWidth, j * oneHeight, flag))
         }
-        // 背景选择
-       
-        if (image1 = localStorage.getItem('dataURL')) {
-            images.style.backgroundImage=`url(${image1})`
-            
-        }else{
-            images.style.backgroundImage=`url(bgImage)`
-        }
-        var cookieLeft, cookieTop, cookieColor
+    }
+    // console.log(block);
+}
+//创建每个小的dom元素
+function Bg(left, top, flag) {
+    let { bgh, bgw, col, row, bgurl } = obj
+    this.left = left
+    this.top = top
+    this.correctLeft = this.left
+    this.correctTop = this.top
 
-        if (document.cookie) {
-            var cook = document.cookie.split(', ').forEach(item => {
-                var key = item.split('=')
-                switch (key[0]) {
-                    case 'left': cookieLeft = key[1]; break;
-                    case 'top': cookieTop = key[1]; break;
-                    case 'color': cookieColor = key[1]; break;
-                    default: break;
-                }
+    this.dom = document.createElement('div')
+    this.dom.style.width = parseInt(bgw / row) + 'px'
+    this.dom.style.height = parseInt(bgh / col) + 'px'
+    this.dom.style.border = '1px solid white'
+    this.dom.style.boxSizing = 'border-box'
+    this.dom.style.position = 'absolute'
+    this.dom.style.transition = 'all 0.3s  ease-in'
+    this.dom.style.background = `url(${bgurl}) `
+    this.dom.style.backgroundSize = `${bgw}px ${bgh}px`
+    this.dom.style.backgroundPosition = ` -${this.left}px -${this.top}px`
+    this.dom.style.visibility = 'block'
+
+
+    content.appendChild(this.dom)
+    if (!flag) {
+        this.dom.style.visibility = 'hidden'
+    }
+    this.show = function () {
+        this.dom.style.left = this.left + 'px'
+        this.dom.style.top = this.top + 'px'
+    }
+
+}
+//随机数
+function randomIndex(parameter) {
+    return parseInt(Math.random() * (parameter - 1))
+}
+// 乱序
+function chaos() {
+    var len = obj.block.length
+    for (let i = 0; i < len - 1; i++) {
+        var index = randomIndex(len)
+        var prop = obj.block[i]
+        huanwei(obj.block[index], obj.block[i])
+    }
+
+}
+
+// 换位
+function huanwei(a, b) {
+    var temp = a.left
+    a.left = b.left
+    b.left = temp
+
+    temp = a.top
+    a.top = b.top
+    b.top = temp
+
+    a.show()
+    b.show()
+}
+// 遍历-点击事件
+
+function events() {
+    var flag = true
+    content.onclick = function () {
+
+        if (flag) {
+            setTime()
+        }
+        flag = false
+    }
+    obj.block.forEach(item => {
+        console.log(obj.win);
+
+        item.dom.onclick = function () {
+            if (obj.win) {
+                setTime = null
+                console.log('yingle');
+                return
+            }
+            var disabled = obj.block.find(key => {
+                return key.dom.style.visibility == 'hidden'
             })
-            app.style.left = cookieLeft + 'px'
-            app.style.top = cookieTop + 'px'
-            app.style.backgroundColor = cookieColor
-            console.log(cookieColor);
+            obj.num++
+            countNumber.innerHTML = obj.num
+            // if(judgeChange(item,disabled)){
+                huanwei(item, disabled)
+                setTimeout(() => {
+                    judge()
+                }, 300);
+            // }
+           
         }
-        app.ontouchstart= function (e) {
-            var l = e.pageX - this.offsetLeft
-            var t = e.pageY - this.offsetTop
-            this.style.backgroundColor = cookieColor = randomColor()
-            this.style.transition = 'background-color 2s'
-            document.ontouchmove = function (e) {
-                var le = e.pageX - l
-                var to = e.pageY - t
-                app.style.left = le + 'px'
-                app.style.top = to + 'px'
-                cookieLeft = le
-                cookieTop = to
-            }
-            document.ontouchend = function () {
-                document.onmousemove = null
-                document.cookie = `left=${cookieLeft}, top=${cookieTop}, color=${cookieColor}`
-            }
-        }
+        item.show()
+    })
+}
 
 
-    </script>
-    <script>
-        //    设置背景
-        const btn = document.querySelector('button')
-        const inputfile = document.querySelector('.inputfile')
-            inputfile.onchange = function () {
-                const fileObj = inputfile.files[0];
-                const windowURL = window.URL || window.webkitURL;
-                if (fileObj) {
-                    const dataURL = windowURL.createObjectURL(fileObj);
-                    images.style.backgroundImage = `url(${dataURL})`
-                    localStorage.setItem('dataURL',dataURL)
-                }
-            }
-    </script>
+
+function judge() {
+    var flag = true
+    obj.block.forEach(item => {
+        if (item.left !== item.correctLeft || item.top !== item.correctTop) {
+            flag = false
+        }
+    })
+    if (flag) {
+        obj.block[obj.block.length - 1].dom.style.visibility = 'visible'
+        obj.block.forEach(item => {
+            item.dom.style.border = 'none'
+        })
+        clearInterval(obj.timers)
+
+        obj.win = true
+        setTimeout(() => {
+            alert('胜利')
+        }, 200);
+
+    }
+}
+
+function judgeChange(a,b){
+    let {oneWidth,oneHeight}=obj
+    if((Math.abs(a.left-b.left)==oneWidth&&a.top==b.top)||(Math.abs(a.top-b.top)==oneHeight&&a.left==b.left)){
+        return true
+    }else{
+        return false
+    }
+}
+   
+</script>
